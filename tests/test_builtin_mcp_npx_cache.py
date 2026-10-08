@@ -173,6 +173,8 @@ def test_npx_cache_check_detects_scoped_package_in_npx_cache(monkeypatch, tmp_pa
 
 def test_npx_cache_check_falls_back_when_async_subprocess_is_unsupported(monkeypatch, tmp_path):
     builtin_mcp = _load_builtin_mcp(monkeypatch)
+    # Test the subprocess fallback regardless of the host's populated npm cache.
+    monkeypatch.setattr(builtin_mcp, "_is_package_in_npx_cache", lambda _: False)
 
     async def unsupported_exec(*args, **kwargs):
         raise NotImplementedError("subprocess transport unavailable")
@@ -208,6 +210,8 @@ def test_npx_cache_check_falls_back_when_async_subprocess_is_unsupported(monkeyp
 
 def test_npx_cache_check_fallback_treats_timeout_as_cache_miss(monkeypatch, tmp_path):
     builtin_mcp = _load_builtin_mcp(monkeypatch)
+    # Test the subprocess timeout regardless of the host's populated npm cache.
+    monkeypatch.setattr(builtin_mcp, "_is_package_in_npx_cache", lambda _: False)
 
     async def unsupported_exec(*args, **kwargs):
         raise NotImplementedError("subprocess transport unavailable")
